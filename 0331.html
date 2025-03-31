@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>0331筆記-JS輸出入</title>
+        <meta charset="UTF-8">
+        <!--HTML註解-->
+        <style>/*CSS註解*/
+
+        </style>
+        <script>/* JS多行註解 */   // JS單行註解
+            function get(id){
+                return document.getElementById(id);
+            }
+            function add(a,b){
+                return a+b;
+            }
+            function calc(){
+                elm1=get("n1");
+                elm2=get("n2");
+                
+                n1=parseInt(elm1.value);
+                if(isNaN(n1))n1=0;//NaN=Not a Number
+                n2=parseInt(elm2.value);
+                if(isNaN(n2))n2=0;
+
+                get("ans").value=add(n1,n2);
+            }
+        </script>
+    </head>
+    <body>
+        <input type="test" id="n1"><input type="test" id="n2">
+        <button onclick="calc();">等於</button>
+        <input type="test" id="ans">
+        <div id="msg">innerHTML</div>
+        <a href="index.html">回首頁</a>
+    </body>
+</html>
