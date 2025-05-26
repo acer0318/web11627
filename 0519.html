@@ -3,6 +3,9 @@
     <title>0519筆記-宇宙射擊遊戲</title>
     <meta charset="UTF-8">
     <style>
+        body{
+            margin-top: 0px;
+        }
         #universal{
             width: 800px;
             height: 800px;
@@ -18,45 +21,49 @@
             width: 40px;
             position: absolute;
         }
+        #status{
+            background: lightgray;
+            width: 790px;
+            position: absolute;
+            z-index: 9;
+            padding: 5px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
         .bullet{
             width: 4px;
             height: 6px;
             background: red;
             position: absolute;
         }
+        .ufo{
+            height: 40px;
+            position: absolute;
+            top: -40px;
+        }
     </style>
     <script>
         function gameInit(){
-            //飛船初始位置 螢幕中央 下方
             ship=document.getElementById("ship");
-            ship.pos={x:380,y:740};
-            ship.style.left=b.pos.x+"px";
-            ship.style.top=b.pos.y+"px";
+            ship.w=40;
+            ship.h=60;
+            ship.pos={x:(800-ship.w)/2,y:800-ship.h};
+            ship.style.left=ship.pos.x+"px";
+            ship.style.top=ship.pos.y+"px";
             ship.moving=0;/*0 to stop,+1 to right,-1 to left*/
             ship.move=setInterval(function(){
                 if(ship.moving==0) return;
                 if(ship.pos.x==0 && ship.moving <0)return;
-                if(ship.pos.x==760 && ship.moving >0)return;
+                if(ship.pos.x==800-ship.w && ship.moving >0)return;
                 ship.pos.x += ship.moving;
                 ship.style.left=ship.pos.x+"px";
             },10);
-        }
-        function shoot(){
-            var b=document.createElement("div");
-            b.className="bullet";
-            b.pos={x:ship.pos+18,y:ship.pos.y-6};
-            b.ship.style.left=b.pos.x+"px";
-            b.ship.style.top=b.pos.y+"px";
-            b.move=setInterval(function(){           
-                b.pos.y--;
-                b.style.top=b.pos.y+"px";
-                if(b.pos.y<0) die(b);
-            },10);
-            document.getElementById("universal").appendChild(b);
-        }
-        function die(obj){
-            clearInterval(obj.move);
-            obj.remove();
+            setInterval(newUFO,1000);
+            game_score=0;
+            game_second=0;
+            setInterval(function(){
+                game_second++;
+                document.getElementById("gametime").innerHTML=game_second;
+            },1000);
         }
         function mykeydown(){
             event.preventDefault();
@@ -71,10 +78,64 @@
         function mykeyup(){
             ship.moving=0;
         }
+        function shoot(){
+            var b=document.createElement("div");
+            b.className="bullet";
+            b.w=4;
+            b.h=6;
+            b.pos={x:ship.pos.x+(ship.w-b.w)/2,y:ship.pos.y-b.h};
+            b.style.left=b.pos.x+"px";
+            b.style.top=b.pos.y+"px";
+            b.move=setInterval(function(){           
+                b.pos.y--;
+                b.style.top=b.pos.y+"px";
+                if(b.pos.y<0) {
+                    die(b);
+                } else{
+                    var ufos=Array.from(document.getElementsByClassName("ufo")).filter(function(u){
+                        return (u.pos.x < b.pos.x && u.pos.x+u.w >= b.pos.x+b.w) && (u.pos.y+u.h >= b.pos.y);
+                    });
+                    if(ufos.length>0){
+                        game_score+=ufos.length;
+                        ufos.forEach(function(u){die(u);});
+                        die(b);
+                        document.getElementById("gamescore").innerHTML=game_score;
+                    }
+                }
+            },10);
+            document.getElementById("universal").appendChild(b);
+        }
+        function die(obj){
+            clearInterval(obj.move);
+            obj.remove();
+        }
+        function rand(min,max){
+            return Math.floor(Math.random()*(max-min+1))+min;
+        }
+        function newUFO(){
+            var u=document.createElement("img");
+            u.src="pic/ufo.png";
+            u.className="ufo";
+            u.w=60;
+            u.h=40;
+            u.pos={x:rand(0,800-u.w),y:-u.h};
+            u.style.left=u.pos.x+"px";
+            u.style.top=u.pos.y+"px";
+            u.move=setInterval(function(){
+                u.pos.x+=rand(-1,1);
+                if(u.pos.x >800-u.w) u.pos.x=800-u.w;
+                else if(u.pos.x < 0) u.pos.x=0;
+                u.pos.y++;
+                u.style.left=u.pos.x+"px";
+                u.style.top=u.pos.y+"px";
+                if(u.pos.y>800-u.h) die(u);
+            },30);
+            document.getElementById("universal").appendChild(u);
+        }
     </script>
 </head>
 <body onload="gameInit();" onkeydown="mykeydown();" onkeyup="mykeyup();"></body>
-    <div id="status"></div>
+    <div id="status">Time:<span id="gametime">0</span>秒 Score:<span id="gamescore">0</span>分</div>
     <div id="universal">
         <img id="ship" src="pic/ship.png">
     </div>
