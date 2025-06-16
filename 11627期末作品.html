@@ -9,18 +9,80 @@
             padding: 30px;
             text-align: center;
         }
-        
-
-
+        .health{
+            margin: 10px;
+            font-size: 20px;
+        }
+        button{
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #log{
+            margin-top:20px;
+            font-size: 16px;
+        }
     </style>
     <script>
+        let plarHP=100;
+        let enemyHP=100;
+        let isBlocking=fale;
+
+        function updateHP(){
+            document.getElementById("playerHP").innerText=playHP;
+            document.getElementById("enemyHP").innerText=enemyHP;
+        }
+        function attack(){
+            if(enemyHP<=0||playerHP<=0)return;
+            enemyHP-=20;
+            log("阿嬤用了 全雞圖 攻擊20點!");
+            enemyTurn();
+        }
+        function heal(){
+            if(enemyHP<=0||playerHP<=0)return;
+            playerHP=Math.min(playerHP+15,100);
+            log("阿嬤貼了 早安圖 回了15點血!");
+            enemyTurn();
+        }
+        function block(){
+            if(enemyHP<=0||playerHP<=0)return;
+            isBlocking=true;
+            log("阿嬤用了 佛祖保佑!準備擋下一招");
+            enemyTurn();
+        }
+        function enemyTurn(){
+            if(enemyTurn<=0){
+                log("阿嬤獲勝!");
+                return;
+            }
+        }
+        setTimeout(() => {
+            if(isBlocking){
+                log("年輕人攻擊被擋住了!");
+                isBlocking=false;
+            }else{
+                playerHP-=15;
+                log("年輕人回嘴造成15傷害!");
+            }
+            if(plarHP<=0){
+                log("阿嬤被氣到昏倒遊戲結束!");
+            }
+            updateHP();
+        }, 500);
+    
+        updateHP();
 
     </script>
 </head>
 <body>
     <h1>長輩圖RPG</h1>
-    <h4>阿嬤vs年輕人</h4>
-    <div class="health-bar">阿嬤血量:<span id="playerHP">100</span></div>
-    <div class="health-bar">年輕人血量:<span id="enemyHP">100</span></div>
+    <img src="https://images.app.goo.gl/X2w7BhpQtZ5aL6d19" alt="阿嬤圖片" width="180">
+    <div class="health">阿嬤血量:<span id="playerHP">100</span></div>
+    <div class="health">年輕人血量:<span id="enemyHP">100</span></div>
+    <button onclick="attack()">全雞圖攻擊</button>
+    <button onclick="heal()">早安圖回血</button>
+    <button onclick="block()">佛祖保佑擋招</button>
+    <div id="log"></div>
 </body>
 </html>
