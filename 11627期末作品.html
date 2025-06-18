@@ -70,14 +70,18 @@
             }
             updateHP();
         }, 500);
-    
+        function log(message) {
+        document.getElementById("log").innerText = message;
+        updateHP();
+        }
         updateHP();
 
     </script>
 </head>
 <body>
     <h1>長輩圖RPG</h1>
-    <img src="https://images.app.goo.gl/X2w7BhpQtZ5aL6d19" alt="阿嬤圖片" width="180">
+    <img src="https://png.pngtree.com/png-clipart/20221017/original/pngtree-cute-grandma-vector-illustration-png-image_8690364.png" alt="阿嬤圖片" width="180">
+  <img src="https://cdn.pixabay.com/photo/2017/11/12/21/01/cartoon-2934389_1280.png" alt="詐騙集團" width="180">
     <div class="health">阿嬤血量:<span id="playerHP">100</span></div>
     <div class="health">年輕人血量:<span id="enemyHP">100</span></div>
     <button onclick="attack()">全雞圖攻擊</button>
