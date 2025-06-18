@@ -1,92 +1,143 @@
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>11627期末作品-長輩圖RPG</title>
-    <style>
-        body{
-            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-            background-color: rgb(174, 236, 174);
-            padding: 30px;
-            text-align: center;
-        }
-        .health{
-            margin: 10px;
-            font-size: 20px;
-        }
-        button{
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        #log{
-            margin-top:20px;
-            font-size: 16px;
-        }
-    </style>
-    <script>
-        let plarHP=100;
-        let enemyHP=100;
-        let isBlocking=fale;
-
-        function updateHP(){
-            document.getElementById("playerHP").innerText=playHP;
-            document.getElementById("enemyHP").innerText=enemyHP;
-        }
-        function attack(){
-            if(enemyHP<=0||playerHP<=0)return;
-            enemyHP-=20;
-            log("阿嬤用了 全雞圖 攻擊20點!");
-            enemyTurn();
-        }
-        function heal(){
-            if(enemyHP<=0||playerHP<=0)return;
-            playerHP=Math.min(playerHP+15,100);
-            log("阿嬤貼了 早安圖 回了15點血!");
-            enemyTurn();
-        }
-        function block(){
-            if(enemyHP<=0||playerHP<=0)return;
-            isBlocking=true;
-            log("阿嬤用了 佛祖保佑!準備擋下一招");
-            enemyTurn();
-        }
-        function enemyTurn(){
-            if(enemyTurn<=0){
-                log("阿嬤獲勝!");
-                return;
-            }
-        }
-        setTimeout(() => {
-            if(isBlocking){
-                log("年輕人攻擊被擋住了!");
-                isBlocking=false;
-            }else{
-                playerHP-=15;
-                log("年輕人回嘴造成15傷害!");
-            }
-            if(plarHP<=0){
-                log("阿嬤被氣到昏倒遊戲結束!");
-            }
-            updateHP();
-        }, 500);
-        function log(message) {
-        document.getElementById("log").innerText = message;
-        updateHP();
-        }
-        updateHP();
-
-    </script>
+  <meta charset="UTF-8">
+  <title>11627期末作品-長輩圖RPG</title>
+  <style>
+    body {
+      font-family: "Microsoft JhengHei", sans-serif;
+      background: #f0f0f0;
+      margin: 0; padding: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+    }
+    .dialogue {
+      flex: 1;
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+    .dialogue p {
+      margin: 10px 0;
+    }
+    .battle {
+      width: 200px;
+      text-align: center;
+    }
+    .battle img {
+      width: 100px;
+      display: block;
+      margin: 10px auto;
+    }
+    .hp {
+      margin: 5px 0;
+    }
+    .skills {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    .skill {
+      background: #fff;
+      padding: 8px;
+      border-radius: 8px;
+      width: 80px;
+      text-align: center;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .skill img { width: 40px; height: 40px; }
+  </style>
+  <script>
+    let playerHP = 100, enemyHP = 100, gameOver = false, dodging = false;
+  
+    function startBattle() {
+      document.getElementById("dialogue").style.display = "none";
+      document.getElementById("battlefield").style.display = "flex";
+    }
+  
+    function updateHP() {
+      document.getElementById("playerHP").innerText = "阿嬤 HP：" + Math.max(playerHP, 0);
+      document.getElementById("enemyHP").innerText = "詐騙 HP：" + Math.max(enemyHP, 0);
+    }
+  
+    function log(msg) {
+      document.getElementById("log").innerText = msg;
+      updateHP();
+    }
+  
+    function playerAttack() {
+      if(gameOver) return;
+      const dmg = getRandom(10,25);
+      enemyHP -= dmg;
+      log(`阿嬤攻擊！造成 ${dmg} 傷害。`);
+      if(enemyHP>0) setTimeout(enemyTurn,500);
+      else log(`🎉 阿嬤勝利！`);
+    }
+  
+    function playerHeal() {
+      if(gameOver) return;
+      const heal = getRandom(10,20);
+      playerHP = Math.min(playerHP+heal, 100);
+      log(`阿嬤回復 ${heal} 點血。`);
+      setTimeout(enemyTurn,500);
+    }
+  
+    function playerDodge() {
+      if(gameOver) return;
+      dodging = true;
+      log(`阿嬤準備閃避下一招！`);
+      setTimeout(enemyTurn,500);
+    }
+  
+    function enemyTurn() {
+      if(gameOver) return;
+      let dmg = getRandom(8,18);
+      if(dodging && Math.random()<0.4) {
+        log(`敵人攻擊被阿嬤閃過了！`);
+      } else {
+        playerHP -= dmg;
+        log(`敵人反擊！造成 ${dmg} 傷害。`);
+      }
+      dodging = false;
+      updateHP();
+      if(playerHP<=0) log(`😵 詐騙集團獲勝！`);
+    }
+  
+    function getRandom(min,max) {
+      return Math.floor(Math.random()*(max-min+1))+min;
+    }  
+  </script>
 </head>
 <body>
-    <h1>長輩圖RPG</h1>
-    <img src="https://png.pngtree.com/png-clipart/20221017/original/pngtree-cute-grandma-vector-illustration-png-image_8690364.png" alt="阿嬤圖片" width="180">
-  <img src="https://cdn.pixabay.com/photo/2017/11/12/21/01/cartoon-2934389_1280.png" alt="詐騙集團" width="180">
-    <div class="health">阿嬤血量:<span id="playerHP">100</span></div>
-    <div class="health">年輕人血量:<span id="enemyHP">100</span></div>
-    <button onclick="attack()">全雞圖攻擊</button>
-    <button onclick="heal()">早安圖回血</button>
-    <button onclick="block()">佛祖保佑擋招</button>
-    <div id="log"></div>
+    <div class="dialogue" id="dialogue">
+    <p>📞 詐騙集團：喂喂，您好？您中大獎了，麻煩提供姓名電話和地址！</p>
+    <p>🙋 阿嬤：蝦米？帝雉？沒有捏，沒有賣啦！</p>
+    <p style="text-align:center;"><button onclick="startBattle()">開始對戰</button></p>
+    </div>
+
+    <div class="container" id="battlefield" style="display:none;">
+        <div class="battle">
+            <img id="grandma" src="pic/grandma.jpg" width="150px;">
+            <div class="hp" id="playerHP">阿嬤 HP：100</div>
+        </div>
+        <div class="battle">
+            <img id="enemy" src="pic/enemy.webp"width="150px;">
+            <div class="hp" id="enemyHP">詐騙 HP：100</div>
+            <div id="log" style="white-space:pre-line; margin-top:10px;"></div>
+            <div class="skills">
+            <div class="skill" onclick="playerAttack()">
+                <img id="attack" src="pic/attack.png"width="150px;">攻擊</div>
+            <div class="skill" onclick="playerHeal()">
+                <img id="heal" src="pic/heal.png"width="150px;">回血</div>
+            <div class="skill" onclick="playerDodge()">
+                <img id="dodge" src="pic/dodge.webp"width="150px;">閃避</div>
+        </div>
+    </div>
 </body>
 </html>
